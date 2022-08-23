@@ -10,8 +10,6 @@ import {
   NotFoundException,
   ParseIntPipe,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import {
@@ -28,19 +26,19 @@ import {
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
+
   @ApiOkResponse({ type: User, isArray: true })
-  @ApiQuery({ name: 'name', required: false })
   @Get()
-  getUsers(@Query('name') name: string): User[] {
-    return this.usersService.findAll(name);
+  async getUsers(): Promise<any> {
+    return await this.usersService.getTodoList();
   }
 
   @ApiOkResponse({ type: User })
   @ApiNotFoundResponse()
   @Get(':id')
-  getByUserId(@Param('id', ParseIntPipe)id: number): User {
+  getByUserId(@Param('id')id: string) {
     
-    const user= this.usersService.findById(id); 
+    const user= this.usersService.getTodo(id); 
     if(!user){
         throw new NotFoundException();     //if user was no found
     }
@@ -50,22 +48,20 @@ export class UsersController {
   @ApiCreatedResponse({ type: User })
   @ApiBadRequestResponse()
   @Post()
-  createUser(@Body() body: CreateUserDto): User {
-    return this.usersService.createUser(body);
+  createUser(@Body() body) {
+    return this.usersService.createToDo(body);
   }
 
   @ApiCreatedResponse({ type: User })
   @Patch(':id')
-  update(@Param('id') id: string, @Body() body: UpdateUserDto): User {
-    return this.usersService.createUser(body);
+  update(@Param('id') id: string, @Body() body) {
+    return this.usersService.updateToDo(id, body);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    console.log(id);
-    const idInteger = parseInt(id);
-
-    return this.usersService.remove(idInteger);
+    // const idInteger = parseInt(id);
+    return this.usersService.removeToDo(id);
   }
 
   // @Delete(':id')

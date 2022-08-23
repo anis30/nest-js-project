@@ -1,9 +1,15 @@
+import { ArgsType, Field, Int, ObjectType } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
 
+@ObjectType()
 export class User{
     @ApiProperty()
-    id: number;
+    @Field({nullable:true}) //for specifying whether a field is nullable
+    id: string;
     
     @ApiProperty()
-    name: string;
+    @Field({nullable:true})
+    text: string;
+
+    
 }
